@@ -30,18 +30,14 @@ public class ServerThread extends Thread {
 	    //DataOutputStream은 boolean, byte, char, short, int, long, float, double들과 같은 자료의 ;기본형을 직접 읽고 쓸 수 있게 해준다.
 	    try
 	    {
-	      inClient = new BufferedReader(
-	            new InputStreamReader(connectionSocket.getInputStream()));
-	      outClient = new DataOutputStream(
-	            connectionSocket.getOutputStream());
+	      inClient = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
+	      outClient = new DataOutputStream(connectionSocket.getOutputStream());
 	      // 클라이언트 통신에 대한 I/O Stream 생성.
 	      // 클라이언트로의 메시지중 첫번째 줄을 읽은 후에, 토큰을 생성한다. 
 	      // StringTokenizer은 문자열을 분해할 때 특정 요소의 값이 없을 경우 처리하는 것에 대한 질문을 받아 문자열을 특정
 	      //구분자를 기준으로 분해하는 것.
 	      String requestMessageLine = inClient.readLine();
-
-	      StringTokenizer tokenizedLine = new StringTokenizer(
-	            requestMessageLine);
+	      StringTokenizer tokenizedLine = new StringTokenizer(requestMessageLine);
 
 	      if(tokenizedLine.nextToken().equals("GET"))
 	      {
@@ -112,7 +108,6 @@ public class ServerThread extends Thread {
 	      //연결을 끊고, 연결이 끊겼다는 메시지 주기.
 	      connectionSocket.close();
 	      System.out.println("Connection Closed");
-	      System.out.println(outClient);
 	    }
 	    catch(IOException ioe)
 	    {
