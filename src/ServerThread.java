@@ -8,6 +8,7 @@ import java.net.Socket;
 import java.util.StringTokenizer;
 
 import javax.activation.MimetypesFileTypeMap;
+import javax.activation.MimetypesFileTypeMap.*;
 
 
 public class ServerThread extends Thread {
@@ -30,6 +31,7 @@ public class ServerThread extends Thread {
 	    //DataOutputStream은 boolean, byte, char, short, int, long, float, double들과 같은 자료의 ;기본형을 직접 읽고 쓸 수 있게 해준다.
 	    try
 	    {
+	    	
 	      inClient = new BufferedReader(new InputStreamReader(connectionSocket.getInputStream()));
 	      outClient = new DataOutputStream(connectionSocket.getOutputStream());
 	      // 클라이언트 통신에 대한 I/O Stream 생성.
@@ -43,6 +45,7 @@ public class ServerThread extends Thread {
 	      {
 	        // 토큰이 겟이라고 되어 있으면 그 다음 토큰이 파일이름이라고 지정해주는 것. 또한 불필요한 path(/)를 생략한다.
 	        String fileName = tokenizedLine.nextToken();
+	        System.out.println(fileName);
 
 	        
 	        if(fileName.startsWith("/") == true)
@@ -50,6 +53,7 @@ public class ServerThread extends Thread {
 	          if(fileName.length() > 1)
 	          {
 	            fileName = fileName.substring(1);
+	            System.out.println(fileName);
 	          }
 	          else
 	          {
@@ -58,6 +62,14 @@ public class ServerThread extends Thread {
 	        }
 
 	        File file = new File(fileName);
+	        String token = fileName.split("\\.")[1];
+	        String mimeType = "";
+	          if(token == "html"){
+	        	  mimeType = "text/html";
+	          }
+	          else if(token == "jpg"){
+	        	  mimeType = "image/jpeg";
+	          }
 	        
 	        // 요청한 파일이 있을 경우,
 	        // MIME이란, 브라우저에게 지금 서버가 보내려고 하는 데이터의 형식을 보내려고 하니 준비하라는 의미로 할 수 잇음.
@@ -67,10 +79,7 @@ public class ServerThread extends Thread {
 	        // 이미지의 경우 현재, 크롬에서 이미지를 text/html로 둬도 알아서 해석이 되기 때문에 
 	        // 이미지를 따로 설정하는 것은 생략하였음.. (사실 어떻게 해야할지 잘 모르겟음.)
 	        if(file.exists())
-	        {
-	          String mimeType = new MimetypesFileTypeMap()
-	            .getContentType(file);
-	          mimeType = "text/html";
+	        { 
 	          
 	          int numOfBytes = (int) file.length();
 
@@ -80,7 +89,6 @@ public class ServerThread extends Thread {
 
 	          outClient.writeBytes("HTTP/1.0 200 Document Follows \r\n");
 	          outClient.writeBytes("Content-Type: " + mimeType + "\r\n");
-
 	          outClient.writeBytes("Content-Length: " + numOfBytes + "\r\n");
 	          outClient.writeBytes("\r\n");
 	          
@@ -113,5 +121,10 @@ public class ServerThread extends Thread {
 	    {
 	      ioe.printStackTrace();
 	    }
+	  }
+	  
+	  private void setContentType(String mimeType){
+		  
+		  
 	  }
 }
